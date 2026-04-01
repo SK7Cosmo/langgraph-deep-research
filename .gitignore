@@ -24,6 +24,7 @@ build/
 # Custom Folders and Files
 .env
 .langgraph_api
+extras/
 
 # Jupyter Notebook
 .ipynb_checkpoints

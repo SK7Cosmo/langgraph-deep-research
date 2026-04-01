@@ -1,7 +1,7 @@
 {
     "dockerfile_lines": [],
     "graphs": {
-      "langgraph_basics": "./src/email_assistant/langgraph_basics.py:app"
+      "scoping_phase": "./src/scoping_phase.py:app"
     },
     "python_version": "3.12",
     "env": ".env",

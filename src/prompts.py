@@ -10,16 +10,14 @@ These are the messages that have been exchanged so far from the user asking for 
 {messages}
 </Messages>
 
-Today's date is {date}.
-
 Assess whether you need to ask a clarifying question, or if the user has already provided enough information for you to start research.
-IMPORTANT: Don't ask for unnecessary information, or information that the user has already provided. If you can see that the user has already provided the information, do not ask for it again.
-Only ask another question if ABSOLUTELY NECESSARY.
+IMPORTANT: Don't ask for unnecessary information, or information that the user has already provided.
+Ask follow up questions if you have a very broad criteria options to consider in order to answer the question
 
 If there are acronyms, abbreviations, or unknown terms, ask the user to clarify.
 Make sure all the information needed to carry out the research task are available.
 
-If you need to ask moe than one question, follow these guidelines:
+If you need to ask more than one question, follow these guidelines:
 - Be concise while gathering all necessary information
 - Use bullet points or numbered lists if appropriate for clarity. 
 
@@ -52,8 +50,6 @@ The messages that have been exchanged so far between yourself and the user are:
 <Messages>
 {messages}
 </Messages>
-
-Today's date is {date}.
 
 You will return a single research question that will be used to guide the research.
 
