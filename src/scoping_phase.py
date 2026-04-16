@@ -1,3 +1,11 @@
+"""
+User Clarification and Research Brief Generation
+
+This module implements the scoping phase of the research workflow, where we:
+1. Assess if the user's request needs clarification
+2. Generate a detailed research brief from the conversation
+"""
+
 # Imports
 import os
 
@@ -13,6 +21,16 @@ from langchain_core.messages import HumanMessage, AIMessage, get_buffer_string #
 from src.state_schema_definitions import AgentInputState, AgentMasterState
 from src.state_schema_definitions import ClarifyWithUserSchema, ResearchQuestionSchema
 from src.prompts import clarify_with_user_instructions, transform_messages_into_research_topic_prompt
+
+
+# Setting up LLM
+llm = init_chat_model(
+	"openai:gpt-4.1",
+	temperature=0,  # Factual response
+	max_tokens=1000,  # OpenRouter free token constraints
+	openai_api_key=os.getenv("OPENROUTER_API_KEY"),
+	openai_api_base="https://openrouter.ai/api/v1"
+)
 
 
 # Defining Nodes
@@ -40,16 +58,6 @@ def clarify_with_user(state: AgentMasterState) -> Command[Literal["write_researc
 			goto="write_research_brief",
 			update={"messages": [AIMessage(content=response.verification)]}  # Verification acknowledgement is added to AI Message history
 		)
-
-
-# Setting up LLM
-llm = init_chat_model(
-	"openai:gpt-4.1",
-	temperature=0,  # Factual response
-	max_tokens=1000,  # OpenRouter free token constraints
-	openai_api_key=os.getenv("OPENROUTER_API_KEY"),
-	openai_api_base="https://openrouter.ai/api/v1"
-)
 
 
 # Defining Nodes
@@ -81,7 +89,7 @@ deep_researcher_builder.add_node("clarify_with_user", clarify_with_user)
 deep_researcher_builder.add_node("write_research_brief", write_research_brief)
 
 # Add workflow edges
-deep_researcher_builder.add_edge(START, "clarify_with_user") # END if further claification needed, else goto write_research_brief
+deep_researcher_builder.add_edge(START, "clarify_with_user") # END if further clarification needed, else goto write_research_brief
 deep_researcher_builder.add_edge("write_research_brief", END)
 
 # Compile the workflow

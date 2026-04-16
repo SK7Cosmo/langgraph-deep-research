@@ -3,7 +3,8 @@
 This module contains all prompt templates used across the research workflow components,
 1. clarify_with_user_instructions: scoping phase
 2. transform_messages_into_research_topic_prompt: scoping phase
-3.
+3. research_agent_prompt: researching phase
+4. summarize_webpage_prompt: researching phase
 """
 
 clarify_with_user_instructions="""
@@ -130,4 +131,72 @@ After each search tool call, use think_tool to analyze the results:
 - Do I have enough to answer the question comprehensively?
 - Should I search more or provide my answer?
 </Show Your Thinking>
+"""
+
+
+summarize_webpage_prompt = """You are tasked with summarizing the raw content of a webpage retrieved from a web search. Your goal is to create a summary that preserves the most important information from the original web page. This summary will be used by a downstream research agent, so it's crucial to maintain the key details without losing essential information.
+
+Here is the raw content of the webpage:
+
+<webpage_content>
+{webpage_content}
+</webpage_content>
+
+Please follow these guidelines to create your summary:
+
+1. Identify and preserve the main topic or purpose of the webpage.
+2. Retain key facts, statistics, and data points that are central to the content's message.
+3. Keep important quotes from credible sources or experts.
+4. Maintain the chronological order of events if the content is time-sensitive or historical.
+5. Preserve any lists or step-by-step instructions if present.
+6. Include relevant dates, names, and locations that are crucial to understanding the content.
+7. Summarize lengthy explanations while keeping the core message intact.
+
+Your summary should be significantly shorter than the original content but comprehensive enough to stand alone as a source of information. Aim for about 25-30 percent of the original length, unless the content is already concise.
+
+Present your summary in the following format:
+
+```
+{{
+   "summary": "Your summary here, structured with appropriate paragraphs or bullet points as needed",
+}}
+```
+"""
+
+
+clean_research_findings_prompt = """You are a research assistant that has conducted research on a topic by calling several tools and web searches. Your job is now to clean up the findings, but preserve all of the relevant statements and information that the researcher has gathered.
+
+<Task>
+You need to clean up information gathered from tool calls and web searches in the existing messages.
+All relevant information should be repeated and rewritten verbatim, but in a cleaner format.
+The purpose of this step is just to remove any obviously irrelevant or duplicate information.
+For example, if three sources all say "X", you could say "These three sources all stated X".
+Only these fully comprehensive cleaned findings are going to be returned to the user, so it's crucial that you don't lose any information from the raw messages.
+</Task>
+
+<Tool Call Filtering>
+- **Include**: All tavily_search results and findings from web searches
+- **Exclude**: think_tool calls and responses - these are internal agent reflections for decision-making and should not be included in the final research report
+- **Focus on**: Actual information gathered from external sources, not the agent's internal reasoning process
+</Tool Call Filtering>
+
+<Guidelines>
+1. Your output findings should be fully comprehensive and include ALL of the information and sources that the researcher has gathered from tool calls and web searches. It is expected that you repeat key information verbatim.
+2. This report can be as long as necessary to return ALL of the information that the researcher has gathered.
+3. You should include a "Sources" section at the end of the report that lists all of the sources the researcher found
+5. It's really important not to lose any sources. A later LLM will be used to merge this report with others, so having all of the sources is critical.
+</Guidelines>
+
+<Output Format>
+The report should be structured like this:
+**List of Queries and Tool Calls Made**
+**Fully Comprehensive Findings**
+**List of All Relevant Sources**
+
+- Example format for Relevant Sources:
+  [1] Source Title: URL
+  [2] Source Title: URL
+</Output Format>
+
+Critical Reminder: It is extremely important that any information that is even remotely relevant to the user's research topic is preserved verbatim (e.g. don't rewrite it, don't summarize it, don't paraphrase it).
 """

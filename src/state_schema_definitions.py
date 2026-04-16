@@ -1,3 +1,9 @@
+
+"""
+This module defines the state objects and structured schemas used for
+the research agent workflow
+"""
+
 # Imports
 import operator
 
@@ -5,7 +11,7 @@ from pydantic import BaseModel, Field  # For runtime validation on state and out
 from langgraph.graph import MessagesState  # Default Graph State with messages field
 from langchain_core.messages import BaseMessage  # Default class to represent a message
 from langgraph.graph.message import add_messages  # Chat History Management to append messages
-from typing_extensions import Optional, Annotated, Sequence  # To support older python versions
+from typing_extensions import Optional, Annotated, Sequence, List, TypedDict # To support older python versions
 
 
 class AgentInputState(MessagesState):
@@ -31,6 +37,26 @@ class AgentMasterState(MessagesState):
 	final_report: str
 
 
+class ResearcherState(TypedDict):
+	"""
+	State for the research agent containing message history and research metadata.
+	"""
+	researcher_messages: Annotated[Sequence[BaseMessage], add_messages]
+	tool_call_iterations: int
+	research_topic: str
+	compressed_research: str
+	raw_notes: Annotated[List[str], operator.add]
+
+
+class ResearcherOutputState(TypedDict):
+	"""
+	Output state for the research agent containing final research results.
+	"""
+	compressed_research: str
+	raw_notes: Annotated[List[str], operator.add]
+	researcher_messages: Annotated[Sequence[BaseMessage], add_messages]
+
+
 class ClarifyWithUserSchema(BaseModel):
 	"""Schema for user clarification decision and questions."""
 
@@ -51,3 +77,8 @@ class ResearchQuestionSchema(BaseModel):
 	research_brief: str = Field(
 		description="A research question that will be used to guide the research.",
 	)
+
+
+class SummarySchema(BaseModel):
+	"""Schema for webpage content summarization."""
+	summary: str = Field(description="Concise summary of the webpage content")
