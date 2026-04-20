@@ -35,9 +35,6 @@ Designed for **high-quality, citation-backed insights** while optimizing for **t
 
 ---
 
-
----
-
 ## ⚙️ Models & Tools
 
 | Component | Tool / Model | Purpose |
