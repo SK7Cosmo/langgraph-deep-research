@@ -1,9 +1,10 @@
 {
     "dockerfile_lines": [],
     "graphs": {
-      "scoping_phase": "./src/scoping_phase.py:app"
+      "scoping_phase": "./src/scoping_phase.py:scope_agent",
+      "researching_phase": "./src/researching_phase.py:research_agent"
     },
-    "python_version": "3.12",
+    "python_version": "3.14",
     "env": ".env",
     "dependencies": [
       "."
